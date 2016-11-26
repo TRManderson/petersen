@@ -6,6 +6,7 @@ import os
 module_path = os.path.join(pkg_resources.get_distribution('petersen').location, 'petersen')
 
 app = Flask("petersen.app", static_folder=os.path.join(module_path, 'static'))
+app.config['db_url'] = 'sqlite:///:memory:'
 
 template_lookup = TemplateLookup([
     os.path.join(pkg_resources.get_distribution('petersen').location, 'petersen', 'templates')
