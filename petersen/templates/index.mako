@@ -4,6 +4,7 @@
     <title>Petersen</title>
     <link rel="stylesheet/less" type="text/css" href="/static/css/main.less" >
     <script src="/static/js/lib/less.min.js" type="text/javascript"></script>
+    <script src="/static/js/main.js" type="text/javascript"></script>
 </head>
 <body>
 <div class="container">
