@@ -18,7 +18,7 @@ setup(
     version='0.0.1',
     description='Social network framework for creating positive impact communities',
     url='https://github.com/TRManderson/petersen',
-    author='Lewis Bobbermen, Tom Manderson',
+    author='Lewis Bobbermen, Tom Manderson, Neil Ashford',
     license='MIT',
     classifiers=[
         'Development Status :: 2 - Pre-alpha',
