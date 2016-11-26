@@ -11,6 +11,7 @@ install_requires = [
     'psycopg2',
     'flask',
     'typing',
+    'mako',
 ]
 
 setup(
