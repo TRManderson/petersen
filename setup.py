@@ -11,7 +11,6 @@ install_requires = [
     'flask',
     'typing',
     'mako',
-    'jsmin',
 ]
 
 setup(
