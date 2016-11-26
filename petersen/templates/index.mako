@@ -2,8 +2,8 @@
 <html>
 <head>
     <title>Petersen</title>
-    <link rel="stylesheet/less" type="text/css" href="/static/css/main.less" >
-    <script src="/static/js/lib/less.min.js" type="text/javascript"></script>
+    <link rel="stylesheet/less" type="text/css" href="/assets/css/main.less" >
+    <script src="/assets/js/lib/less.min.js" type="text/javascript"></script>
 </head>
 <body>
 <div class="container">
