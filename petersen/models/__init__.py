@@ -19,6 +19,7 @@ class User(Base):
     name = Column(String)
     username = Column(String, unique=True)
     password = Column(String)
+    is_admin = Column(Boolean, default=False)
 
 
 class Badge(Base):
@@ -41,7 +42,7 @@ class Connection(Base):
 
     sender_id = Column(Integer, ForeignKey(User.user_id), primary_key=True)
     receiver_id = Column(Integer, ForeignKey(User.user_id), primary_key=True)
-    is_pending = Column(Boolean)
+    is_pending = Column(Boolean, default=True)
 
 
 class Tag(Base):
