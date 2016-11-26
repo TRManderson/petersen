@@ -8,7 +8,6 @@ from setuptools import setup, find_packages
 
 install_requires = [
     'sqlalchemy',
-    'psycopg2',
     'flask',
     'typing',
     'mako',
