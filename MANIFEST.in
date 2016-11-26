@@ -1,0 +1,2 @@
+recursive-include petersen/static *
+recursive-include petersen/templates *

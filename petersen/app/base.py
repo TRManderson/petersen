@@ -3,7 +3,9 @@ from mako.lookup import TemplateLookup
 import pkg_resources
 import os
 
-app = Flask("petersen.app")
+module_path = os.path.join(pkg_resources.get_distribution('petersen').location, 'petersen')
+
+app = Flask("petersen.app", static_folder=os.path.join(module_path, 'static'))
 
 template_lookup = TemplateLookup([
     os.path.join(pkg_resources.get_distribution('petersen').location, 'petersen', 'templates')
