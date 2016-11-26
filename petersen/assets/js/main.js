@@ -13,7 +13,7 @@ class NewUser extends React.Component {
     handleSubmit(event) {
         event.preventDefault();
 
-        if (!this.state.name.match(/^\w* \w$/)) {
+        if (!this.state.name.match(/^\w* \w*$/)) {
             alert("Please enter a valid name (i.e. Tom Manderson)");
             return false;
         }
@@ -33,7 +33,20 @@ class NewUser extends React.Component {
             return false;
         }
 
-        alert("woot woot motherfuckers!");
+        $.ajax({
+            url: "/user/new",
+            data: JSON.stringify({
+                name: this.state.name,
+                username: this.state.username,
+                password: this.state.password
+            }),
+            contentType: "application/json",
+            processData: false,
+            method: "POST",
+            success: function(data) {
+                console.log(data);
+            }
+        });
     }
 
     render() {
@@ -66,28 +79,6 @@ class NewUser extends React.Component {
 
                 <input type = "submit" value = "Create User"/>
             </form>
-            </div>
-        );
-    }
-}
-
-class Demo extends React.Component {
-    render() {
-        $.ajax({
-            url: "/user/new",
-            data: JSON.stringify({
-                name: "neil",
-                password: "password1",
-            }),
-            contentType: "application/json",
-            processData: false,
-            method: "POST",
-            success: function(data){console.log(data);}
-        });
-        return (
-            <div>
-                <h1>Hello World</h1>
-                <p>What's up</p>
             </div>
         );
     }
