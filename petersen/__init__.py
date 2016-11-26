@@ -1,4 +1,5 @@
 from petersen.app import app
 
 if __name__ == "__main__":
-    app.run()
+    from .__main__ import main
+    main()
