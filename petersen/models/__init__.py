@@ -7,9 +7,8 @@ from sqlalchemy import (
     Boolean,
     ForeignKey
 )
+from sqlalchemy.orm import sessionmaker
 from petersen.models.base import Base
-
-engine = create_engine(app.config['db_url'], echo=True)
 
 
 class User(Base):
@@ -57,4 +56,18 @@ class Messages(Base):
     receiver_id = Column(Integer, ForeignKey(User.user_id))
     message = Column(String)
 
+engine = create_engine(app.config['db_url'], echo=True)
 Base.metadata.create_all(engine)
+
+Session = sessionmaker(
+    autocommit=False, autoflush=False, bind=engine
+)
+
+
+def needs_db(func):
+    def f_wrapper(*args, **kwargs):
+        db_session = Session()
+        ret = func(db_session, *args, **kwargs)
+        db_session.close()
+        return ret
+    return f_wrapper
