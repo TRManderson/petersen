@@ -1,2 +1,2 @@
 from .base import app
-from . import user, admin, message
+from . import user, admin, message, login

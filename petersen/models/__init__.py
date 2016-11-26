@@ -9,6 +9,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import sessionmaker
 from petersen.models.base import Base
+from functools import wraps
 
 
 class User(Base):
@@ -16,13 +17,15 @@ class User(Base):
 
     user_id = Column(Integer, primary_key=True)
     name = Column(String)
+    username = Column(String, unique=True)
+    password = Column(String)
 
 
 class Badge(Base):
     __tablename__ = 'badges'
 
     badge_id = Column(Integer, primary_key=True)
-    name = Column(String)
+    name = Column(String, unique=True)
     image_path = Column(String)
 
 
@@ -65,6 +68,7 @@ Session = sessionmaker(
 
 
 def needs_db(func):
+    @wraps(func)
     def f_wrapper(*args, **kwargs):
         db_session = Session()
         ret = func(db_session, *args, **kwargs)

@@ -7,6 +7,7 @@ module_path = os.path.join(pkg_resources.get_distribution('petersen').location, 
 
 app = Flask("petersen.app")
 app.config['db_url'] = 'sqlite:///dev.db'
+app.secret_key = 'TRMISAVATARAANGCONFIRMED'  # TODO Move to env var and use an actual random string
 
 template_lookup = TemplateLookup([
     os.path.join(pkg_resources.get_distribution('petersen').location, 'petersen', 'templates')

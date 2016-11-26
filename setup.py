@@ -11,6 +11,7 @@ install_requires = [
     'flask',
     'typing',
     'mako',
+    'bcrypt'
 ]
 
 setup(
