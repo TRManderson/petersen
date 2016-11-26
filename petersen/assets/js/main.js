@@ -1,8 +1,14 @@
 class Demo extends React.Component {
     render() {
         $.ajax({
-            url: "/index.html",
-            success: function(data){alert(data);}
+            url: "/user/new",
+            data: JSON.stringify({
+                name: "neil"
+            }),
+            contentType: "application/json",
+            processData: false,
+            method: "POST",
+            success: function(data){console.log(data);}
         });
         return (
             <div>
