@@ -1,4 +1,4 @@
-from petersen.models import Connection
+from petersen.models import Connection, User
 from sqlalchemy import and_, or_
 from functools import wraps
 from flask import session, abort
@@ -32,4 +32,25 @@ def needs_logged_in(func):
         if 'user_id' not in session:
             abort(403)
         return func(*args, **kwargs)
+    return f_wrapper
+
+
+def needs_admin(func):
+    @wraps(func)
+    def f_wrapper(db_session, *args, **kwargs):
+        if 'user_id' not in session:
+            abort(403)
+
+        user = db_session.query(
+            User
+        ).filter(
+            User.user_id == session['user_id']
+        )
+
+        if user.count() == 1:
+            if not user.one().is_admin:
+                abort(403)
+
+        return func(db_session, *args, **kwargs)
+
     return f_wrapper

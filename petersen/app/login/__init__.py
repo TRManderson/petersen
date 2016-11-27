@@ -47,3 +47,11 @@ def logout():
     session.pop('user_id', None)
 
     return ('', 200)
+
+
+@app.route('/logged_in', methods=['GET'])
+def logged_in():
+    return flask.jsonify(**{
+        'user_id': session.get('user_id', -1)
+    })
+
