@@ -5,6 +5,7 @@ from petersen.models import User, Connection, needs_db
 from petersen.app.utils import is_connected, needs_logged_in
 import bcrypt
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy import and_, or_
 
 
 @app.route('/user/new', methods=['POST'])
@@ -109,3 +110,113 @@ def user_endpoint(db_session, user_id):
     return flask.jsonify(**{
         'error': 'Invalid user'
     })
+
+
+@app.route('/user/<int:user_id>/connect', methods=['POST', 'DELETE'])
+@needs_db
+@needs_logged_in
+def connect_endpoint(db_session, user_id):
+    me = session['user_id']
+    if request.method == 'POST':
+        is_pending = db_session.query(Connection).filter(
+            Connection.sender_id == user_id,
+            Connection.receiver_id == me,
+            Connection.is_pending == True
+        )
+        if is_pending.count() == 1:
+            is_pending.one().is_pending = False
+            db_session.commit()
+        else:
+            req = Connection(
+                sender_id=me,
+                receiver_id=user_id
+            )
+
+            try:
+                db_session.add(req)
+                db_session.commit()
+            except IntegrityError:
+                return flask.jsonify(**{
+                    'error': 'Already connected'
+                })
+
+    elif request.method == 'DELETE':
+        con = db_session.query(Connection).filter(
+            or_(
+                and_(
+                    Connection.sender_id == me,
+                    Connection.receiver_id == user_id
+                ),
+                and_(
+                    Connection.sender_id == user_id,
+                    Connection.receiver_id == me
+                )
+            )
+        )
+
+        if con.count() == 1:
+            con.delete()
+            db_session.commit()
+        else:
+            return flask.jsonify(**{
+                'error': 'Invalid user'
+            })
+
+    return ('', 200)
+
+
+@app.route('/user/connections', methods=['GET'])
+@needs_db
+@needs_logged_in
+def list_connections(db_session):
+    me = session['user_id']
+
+    conns = db_session.query(
+        Connection.sender_id,
+        Connection.receiver_id
+    ).filter(
+        or_(
+            Connection.sender_id == me,
+            Connection.receiver_id == me
+        ),
+        Connection.is_pending == False
+    )
+
+    resp = []
+    for sender, receiver in conns:
+        other = sender
+        if sender == me: other = receiver
+        resp.append(other)
+
+    return flask.jsonify(**{
+        'connections': resp
+    })
+
+
+@app.route('/user/connections/pending', methods=['GET'])
+@needs_db
+@needs_logged_in
+def list_pending(db_session):
+    me = session['user_id']
+
+    conns = db_session.query(
+        Connection.sender_id,
+        Connection.receiver_id
+    ).filter(
+        or_(
+            Connection.sender_id == me,
+            Connection.receiver_id == me
+        ),
+        Connection.is_pending == True
+    )
+
+    resp = []
+    for sender, receiver in conns:
+        other = sender
+        if sender == me: other = receiver
+        resp.append(other)
+
+    return flask.jsonify(**{
+        'requests': resp
+    })
+
