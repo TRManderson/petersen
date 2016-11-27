@@ -285,12 +285,18 @@ class Welcome extends React.Component {
 
 class Main extends React.Component {
     /* main window, after logging in */
-    constructor() {
+    constructor(props) {
         /* initialises the window itself, and data within it */
         super();
         this.state = {
-            option: 1
+            option: 1,
+            name: ""
         };
+        $.ajax({
+            url: "/user/" + props.userID,
+            method: "GET",
+            success: (data) => this.setState({name: data.name})
+        });
     }
 
     select(option) {
@@ -312,7 +318,7 @@ class Main extends React.Component {
                     <NavItem eventKey = {1}>Messages</NavItem>
                     <NavItem eventKey = {2}>Log Out</NavItem>
                 </Nav>
-                <PageHeader>Welcome to Petersen</PageHeader>
+                <PageHeader>Welcome to Petersen, {this.state.name}</PageHeader>
 
                 </Panel>
             );
@@ -329,6 +335,11 @@ class Master extends React.Component {
     constructor() {
         /* present the welcome screen */
         super();
+        $.ajax({
+            url: "/logged_in",
+            method: "GET",
+            success: (data) => this.setState({userID: data.user_id})
+        });
         this.state = {
             userID: -1
         };
@@ -341,8 +352,11 @@ class Master extends React.Component {
 
     logout(data) {
         /* log out */
-        alert("bye");
-        this.setState({userID: -1});
+        $.ajax({
+            url: "/logout",
+            method: "POST",
+            success: (data) => this.setState({userID: -1})
+        });
     }
 
     render() {
@@ -357,6 +371,7 @@ class Master extends React.Component {
             return (
                 <Main
                     logout = {() => this.logout()}
+                    userID = {this.state.userID}
                 />
             );
         }
