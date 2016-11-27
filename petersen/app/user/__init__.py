@@ -2,9 +2,9 @@ import flask
 from flask import request, abort, session
 from petersen.app.base import app
 from petersen.models import User, Connection, needs_db
+from petersen.app.utils import is_connected, needs_logged_in
 import bcrypt
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy import or_, and_
 
 
 @app.route('/user/new', methods=['POST'])
@@ -47,35 +47,13 @@ def new_user(db_session):
 
 @app.route('/user/<int:user_id>', methods=['GET', 'POST'])
 @needs_db
+@needs_logged_in
 def user_endpoint(db_session, user_id):
     requester = session['user_id']
     if request.method == 'GET':
         # Get info
-        is_connected = False
 
-        if requester == user_id:
-            is_connected = True
-        else:
-            connection = db_session.query(
-                Connection.sender_id,
-                Connection.receiver_id
-            ).filter(
-                or_(
-                    and_(
-                        Connection.sender_id == user_id,
-                        Connection.receiver_id == requester
-                    ),
-                    and_(
-                        Connection.sender_id == requester,
-                        Connection.receiver_id == user_id
-                    )
-                ),
-                Connection.is_pending == False
-            )
-            if connection.count() == 1:
-                is_connected = True
-
-        if is_connected:
+        if requester == user_id or is_connected(db_session, user_id, requester):
             data = db_session.query(
                 User.name
             ).filter(

@@ -52,7 +52,7 @@ class Tag(Base):
     tag = Column(String, primary_key=True)
 
 
-class Messages(Base):
+class Message(Base):
     __tablename__ = 'messages'
 
     id = Column(Integer, primary_key=True)
