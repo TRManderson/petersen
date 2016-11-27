@@ -1,7 +1,7 @@
 import flask
 from flask import request, abort, session
 from petersen.app.base import app
-from petersen.models import User, Connection, needs_db
+from petersen.models import User, Connection, needs_db, Tag
 from petersen.app.utils import is_connected, needs_logged_in
 import bcrypt
 from sqlalchemy.exc import IntegrityError
@@ -56,16 +56,20 @@ def user_endpoint(db_session, user_id):
 
         if requester == user_id or is_connected(db_session, user_id, requester):
             data = db_session.query(
-                User.name
+                User
             ).filter(
                 User.user_id == user_id
             )
+            tags = db_session.query(Tag.tag) \
+                .filter(Tag.user_id == user_id).all()
 
             if data.count() == 1:
                 user = data.one()
 
                 return flask.jsonify(**{
-                    'name': user.name
+                    'name': user.name,
+                    'username': user.username,
+                    'tags': tags,
                 })
 
     else:
