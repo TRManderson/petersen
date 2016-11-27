@@ -25,6 +25,13 @@ class User(Base):
     password = Column(String)
     is_admin = Column(Boolean, default=False)
 
+    def to_json(self):
+        return dict(
+            user_id=self.user_id,
+            name=self.name,
+            is_admin=self.is_admin
+        )
+
 
 class Badge(Base):
     __tablename__ = 'badges'
