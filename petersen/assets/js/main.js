@@ -1,5 +1,5 @@
-let {Button, ControlLabel, FormControl, FormGroup, Nav, NavItem, PageHeader,
-    Panel} = ReactBootstrap;
+let {Button, ControlLabel, FormControl, FormGroup, Jumbotron, Nav, NavItem, 
+    PageHeader, Panel} = ReactBootstrap;
 
 class LogIn extends React.Component {
     /* login window */
@@ -233,11 +233,10 @@ class Welcome extends React.Component {
     }
 
     login(data) {
-        console.log(data);
         if (data.error) {
             alert(data.error);
         } else {
-            this.login(data);
+            this.props.login(data);
         }
     }
 
@@ -285,7 +284,41 @@ class Welcome extends React.Component {
     }
 }
 
+class Master extends React.Component {
+    /* top level thing that holds all of the other things */
+    constructor() {
+        /* present the welcome screen */
+        super();
+        this.state = {
+            userID: -1
+        };
+    }
+
+    login(data) {
+        this.setState({userID: data.user_id});
+    }
+
+    render() {
+        /* draw all of the things */
+        if (this.state.userID == -1) {
+            return (
+                <Welcome
+                    login = {(data) => this.login(data)}
+                />
+            );
+        } else {
+            return (
+            <Panel>
+                <Jumbotron>
+                    <h1>Booyah!</h1>
+                </Jumbotron>
+            </Panel>
+            );
+        }
+    }
+}
+
 ReactDOM.render(
-    <Welcome login = {(data) => {alert(data);}}/>,
+    <Master />,
     document.getElementById('root')
 );
