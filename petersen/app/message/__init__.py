@@ -3,6 +3,7 @@ from flask import request, session, abort
 from petersen.models import needs_db, Message
 from petersen.app.base import app
 from petersen.app.utils import is_connected, needs_logged_in
+from sqlalchemy.sql import or_
 
 
 @app.route('/message/send/<int:user_id>', methods=['POST'])
@@ -55,3 +56,22 @@ def recv_message(db_session, user_id):
         'error': 'Invalid user'
     })
 
+
+@app.route('/message/recent', methods=['GET'])
+@needs_db
+@needs_logged_in
+def recent_messages(db_session):
+    me = session['user_id']
+    msgs = db_session.query(Message) \
+        .filter(or_(Message.sender_id == me, Message.receiver_id == me)) \
+        .filter(Message.read == False) \
+        .order_by(Message.sent_time) \
+        .all()
+    resp = [
+        {
+            'msg': m
+        }
+        for m in msgs
+    ]
+
+    return flask.jsonify(resp)

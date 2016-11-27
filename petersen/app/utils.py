@@ -30,6 +30,6 @@ def needs_logged_in(func):
     @wraps(func)
     def f_wrapper(*args, **kwargs):
         if 'user_id' not in session:
-            abort(400)
+            abort(403)
         return func(*args, **kwargs)
     return f_wrapper

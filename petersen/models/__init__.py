@@ -5,8 +5,11 @@ from sqlalchemy import (
     Integer,
     String,
     Boolean,
-    ForeignKey
+    ForeignKey,
+    TIMESTAMP
 )
+from pytz import utc
+from datetime import datetime as dt
 from sqlalchemy.orm import sessionmaker
 from petersen.models.base import Base
 from functools import wraps
@@ -59,6 +62,8 @@ class Message(Base):
     sender_id = Column(Integer, ForeignKey(User.user_id))
     receiver_id = Column(Integer, ForeignKey(User.user_id))
     message = Column(String)
+    sent_time = Column(TIMESTAMP(timezone=True), default=utc.localize(dt.now()))
+    read = Column(Boolean, nullable=False, server_default='false', default=False)
 
 engine = create_engine(app.config['db_url'], echo=True)
 Base.metadata.create_all(engine)
