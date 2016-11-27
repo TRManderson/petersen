@@ -1,4 +1,4 @@
-let {Button, ControlLabel, FormControl, FormGroup, Jumbotron, Nav, NavItem, 
+let {Button, ControlLabel, FormControl, FormGroup, Jumbotron, Nav, NavItem,
     PageHeader, Panel} = ReactBootstrap;
 
 class LogIn extends React.Component {
@@ -267,9 +267,8 @@ class Welcome extends React.Component {
                 <Nav
                     bsStyle = "pills"
                     activeKey = {2}
-                    onSelect = {(select) => {
-                        this.setState({option: select});
-                    }}
+                    onSelect = {(select) => this.setState({option: select})
+                    }
                 >
                     <NavItem eventKey = {1}>Log In</NavItem>
                     <NavItem eventKey = {2}>New User</NavItem>
@@ -279,6 +278,47 @@ class Welcome extends React.Component {
                     login = {(data) => this.login(data)}
                 />
                 </Panel>
+            );
+        }
+    }
+}
+
+class Main extends React.Component {
+    /* main window, after logging in */
+    constructor() {
+        /* initialises the window itself, and data within it */
+        super();
+        this.state = {
+            option: 1
+        };
+    }
+
+    select(option) {
+        if (option == 2) {
+            this.props.logout();
+        }
+        this.setState({option: option});
+    }
+
+    render() {
+        if (this.state.option == 1) {
+            return (
+                <Panel>
+                <Nav
+                    bsStyle = "pills"
+                    activeKey = {2}
+                    onSelect = {(option) => this.select(option)}
+                >
+                    <NavItem eventKey = {1}>Messages</NavItem>
+                    <NavItem eventKey = {2}>Log Out</NavItem>
+                </Nav>
+                <PageHeader>Welcome to Petersen</PageHeader>
+
+                </Panel>
+            );
+        } else {
+            return (
+                <h1>sup</h1>
             );
         }
     }
@@ -295,7 +335,14 @@ class Master extends React.Component {
     }
 
     login(data) {
+        /* log in */
         this.setState({userID: data.user_id});
+    }
+
+    logout(data) {
+        /* log out */
+        alert("bye");
+        this.setState({userID: -1});
     }
 
     render() {
@@ -308,11 +355,9 @@ class Master extends React.Component {
             );
         } else {
             return (
-            <Panel>
-                <Jumbotron>
-                    <h1>Booyah!</h1>
-                </Jumbotron>
-            </Panel>
+                <Main
+                    logout = {() => this.logout()}
+                />
             );
         }
     }
