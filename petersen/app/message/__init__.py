@@ -70,9 +70,7 @@ def recent_messages(db_session):
         .order_by(Message.sent_time) \
         .all()
     resp = [
-        {
-            'msg': m
-        }
+        m.to_json()
         for m in msgs
     ]
 

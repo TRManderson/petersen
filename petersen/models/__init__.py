@@ -13,6 +13,7 @@ from datetime import datetime as dt
 from sqlalchemy.orm import sessionmaker
 from petersen.models.base import Base
 from functools import wraps
+import json
 
 
 class User(Base):
@@ -64,6 +65,14 @@ class Message(Base):
     message = Column(String)
     sent_time = Column(TIMESTAMP(timezone=True), default=utc.localize(dt.now()))
     read = Column(Boolean, nullable=False, server_default='false', default=False)
+
+    def to_json(self):
+        return {
+            'sender': self.sender_id,
+            'reciever': self.receiver_id,
+            'message': self.message,
+            'sent_time': json.dumps(self.sent_time)
+        }
 
 engine = create_engine(app.config['db_url'], echo=True)
 Base.metadata.create_all(engine)
