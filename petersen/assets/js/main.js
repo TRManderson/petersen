@@ -1,15 +1,14 @@
-let {Button, ControlLabel, FormControl, FormGroup, Nav, NavItem, PageHeader, 
+let {Button, ControlLabel, FormControl, FormGroup, Nav, NavItem, PageHeader,
     Panel} = ReactBootstrap;
 
 class LogIn extends React.Component {
     /* login window */
-    constructor(props) {
+    constructor() {
         /* initialises the window itself, and data within it */
         super();
         this.state = {
             username: "",
             password: "",
-            login: props.login
         };
     }
 
@@ -24,7 +23,7 @@ class LogIn extends React.Component {
             contentType: "application/json",
             processData: false,
             method: "POST",
-            success: function(data) {this.props.login(data);}
+            success: (data) => this.props.login(data)
         });
     }
 
@@ -77,16 +76,14 @@ class LogIn extends React.Component {
 
 class NewUser extends React.Component {
     /* new user dialog window */
-    constructor(props) {
+    constructor() {
         /* initialises the window itself, and data within it */
-        console.log(props);
         super();
         this.state = {
             name: "",
             username: "",
             password: "",
             passwordConfirm: "",
-            login: props.login
         };
     }
 
@@ -145,7 +142,7 @@ class NewUser extends React.Component {
             contentType: "application/json",
             processData: false,
             method: "POST",
-            success: function(data) {this.state.login(data);}
+            success: (data) => this.props.login(data)
         });
     }
 
@@ -227,7 +224,7 @@ class NewUser extends React.Component {
 
 class Welcome extends React.Component {
     /* offers the user either a "New User" dialog, or a "Log In" dialog */
-    constructor(props) {
+    constructor() {
         /* initialises the window itself, and the data within it */
         super();
         this.state = {
@@ -240,7 +237,7 @@ class Welcome extends React.Component {
         if (data.error) {
             alert(data.error);
         } else {
-            this.props.login(data);
+            this.login(data);
         }
     }
 
@@ -249,7 +246,7 @@ class Welcome extends React.Component {
         if (this.state.option == 1) {
             return (
                 <Panel>
-                <Nav 
+                <Nav
                     bsStyle = "pills"
                     activeKey = {1}
                     onSelect = {(select) => {
@@ -260,15 +257,15 @@ class Welcome extends React.Component {
                     <NavItem eventKey = {2}>New User</NavItem>
                 </Nav>
 
-                <LogIn 
-                    login = {this.login.bind(this)}
+                <LogIn
+                    login = {(data) => this.login(data)}
                 />
                 </Panel>
             );
         } else {
             return (
                 <Panel>
-                <Nav 
+                <Nav
                     bsStyle = "pills"
                     activeKey = {2}
                     onSelect = {(select) => {
@@ -280,9 +277,7 @@ class Welcome extends React.Component {
                 </Nav>
 
                 <NewUser
-                    login = {(data) => {
-                        this.login(data);
-                    }}
+                    login = {(data) => this.login(data)}
                 />
                 </Panel>
             );
