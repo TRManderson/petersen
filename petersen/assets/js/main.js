@@ -18,7 +18,7 @@ class LogIn extends React.Component {
         $.ajax({
             url: "/login",
             data: JSON.stringify({
-                name: this.state.username,
+                username: this.state.username,
                 password: this.state.password
             }),
             contentType: "application/json",
@@ -140,7 +140,7 @@ class NewUser extends React.Component {
             data: JSON.stringify({
                 name: this.state.name,
                 username: this.state.username,
-                password: this.state.username
+                password: this.state.password
             }),
             contentType: "application/json",
             processData: false,
