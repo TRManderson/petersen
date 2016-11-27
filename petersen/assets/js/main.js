@@ -283,11 +283,81 @@ class Welcome extends React.Component {
     }
 }
 
+class FindAFriend extends React.Component {
+    constructor() {
+        super();
+        this.state = {
+            name: "",
+            tags: "",
+            result: ""
+        };
+    }
+
+    handle(event) {
+        /* do the thingo */
+        event.preventDefault();
+        $.ajax({
+            url: "/users",
+            data: {
+                name: this.state.name,
+                tags: this.state.tags
+            },
+            method: "GET",
+            processData: false,
+            success: (data) => console.log(data)
+        });
+    }
+    render() {
+        return (
+        <Panel>
+        <form onSubmit = {this.handle.bind(this)}>
+
+        <FormGroup
+            controlId = "name"
+            validationState = "success"
+        >
+            <ControlLabel>Name</ControlLabel>
+            <FormControl
+                type = "text"
+                value = {this.state.name}
+                placeholder = "Who do you want to find?"
+                onChange = {(event) => {
+                    this.setState({name: event.target.value});
+                }}
+            />
+        </FormGroup>
+
+        <FormGroup
+            controlId = "tags"
+            validationState = "success"
+        >
+            <ControlLabel>Tags</ControlLabel>
+            <FormControl
+                type = "text"
+                value = {this.state.tags}
+                placeholder = "What tags does this user have?"
+                onChange = {(event) => {
+                    this.setState({tags: event.target.value});
+                }}
+            />
+        </FormGroup>
+
+        <Button
+            type = "submit"
+        >
+            Log In
+        </Button>
+        </form>
+        </Panel>
+        );
+    }
+}
+
 class Main extends React.Component {
     /* main window, after logging in */
     constructor(props) {
         /* initialises the window itself, and data within it */
-        super();
+        super(props);
         this.state = {
             option: 1,
             name: ""
@@ -300,7 +370,7 @@ class Main extends React.Component {
     }
 
     select(option) {
-        if (option == 2) {
+        if (option == 3) {
             this.props.logout();
         }
         this.setState({option: option});
@@ -312,19 +382,38 @@ class Main extends React.Component {
                 <Panel>
                 <Nav
                     bsStyle = "pills"
-                    activeKey = {2}
+                    activeKey = {this.state.option}
                     onSelect = {(option) => this.select(option)}
                 >
                     <NavItem eventKey = {1}>Messages</NavItem>
-                    <NavItem eventKey = {2}>Log Out</NavItem>
+                    <NavItem eventKey = {2}>Find A Friend</NavItem>
+                    <NavItem eventKey = {3}>Log Out</NavItem>
                 </Nav>
                 <PageHeader>Welcome to Petersen, {this.state.name}</PageHeader>
 
                 </Panel>
             );
+        } else if (this.state.option == 2) {
+            return (
+                <Panel>
+                <Nav
+                    bsStyle = "pills"
+                    activeKey = {this.state.option}
+                    onSelect = {(option) => this.select(option)}
+                >
+                    <NavItem eventKey = {1}>Messages</NavItem>
+                    <NavItem eventKey = {2}>Find A Friend</NavItem>
+                    <NavItem eventKey = {3}>Log Out</NavItem>
+                </Nav>
+                <PageHeader>Welcome to Petersen, {this.state.name}</PageHeader>
+                <FindAFriend
+                    userID = {this.props.userID}
+                />
+                </Panel>
+            );
         } else {
             return (
-                <h1>sup</h1>
+                <h1>awwwww shit bro</h1>
             );
         }
     }
