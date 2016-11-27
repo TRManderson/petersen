@@ -49,7 +49,9 @@ def recv_message(db_session, user_id):
             for m in msgs
         ]
 
-        return flask.jsonify(resp)
+        return flask.jsonify(**{
+            'messages': resp
+        })
 
     return flask.jsonify(**{
         'error': 'Invalid user'
