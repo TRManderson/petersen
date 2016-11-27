@@ -1,24 +1,50 @@
 import flask
 from flask import request, abort
 from petersen.app.base import app
-from petersen.models import User, needs_db
+from petersen.models import User, UserBadge, Tag, needs_db
+from sqlalchemy import or_
 
 
 @app.route('/users', methods=['GET'])
 @needs_db
-def new_user(db_session):
+def user_filter(db_session):
     data = request.args
 
     if data is None:
         abort(400)
 
+    filters = []
+
+    for (k, v) in data.items():
+        if k == 'name':
+            filters.append(
+                User.name.like("%{}%".format(v))
+            )
+        elif k == 'tags':
+            filters.append(
+                or_(
+                    *[
+                        Tag.tag == t
+                        for t in v.split(',')
+                    ]
+                )
+            )
+        elif k == 'badges':
+            filters.append(
+                or_(
+                    *[
+                        UserBadge.badge_id == t
+                        for t in v.split(',')
+                    ]
+                )
+            )
+        else:
+            abort(400)
+
     peeps = db_session.query(
         User
-    ).filter(
-        *[
-            getattr(User, k) == v
-            for (k, v) in data.items()
-        ]
+    ).join(UserBadge, Tag).filter(
+        *filters
     )
 
     resp = [
